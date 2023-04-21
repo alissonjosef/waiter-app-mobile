@@ -9,46 +9,51 @@ import { ProductModal } from "../ProductModal";
 import { useState } from "react";
 import { Product } from "../../types/Product";
 
+interface MenuPros {
+    onAddToCart: (product: Product) => void;
+}
 
-export function Menu() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null >(null)
 
-  function handleOperModal(product: Product) {
-      setIsModalVisible(true)
-    setSelectedProduct(product)
-  }
+export function Menu({onAddToCart}: MenuPros) {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
-  return (
-    <>
+    function handleOperModal(product: Product) {
+        setIsModalVisible(true)
+        setSelectedProduct(product)
+    }
 
-      <ProductModal visible={isModalVisible}
-        onClose={() => setIsModalVisible}
-        product={selectedProduct}
-      />
+    return (
+        <>
 
-      <FlatList
-        data={products}
-        style={{ marginTop: 32 }}
-        contentContainerStyle={{ paddingHorizontal: 24 }}
-        keyExtractor={product => product._id}
-        ItemSeparatorComponent={Separator}
-        renderItem={({ item: product }) => (
-          <ProductContainer onPress={() => handleOperModal(product)}>
-            <Image source={{ uri: `http://192.168.0.118:3001/uploads/${product.imagePath}`, }} />
+            <ProductModal visible={isModalVisible}
+                onClose={() => setIsModalVisible}
+                product={selectedProduct}
+                onAddToCart={onAddToCart}
+            />
 
-            <ProductDetails>
-              <Text weight="600">{product.name}</Text>
-              <Text size={14} color="#6669" style={{ marginVertical: 8 }}>{product.description}</Text>
-              <Text size={14} weight="600">{formatCurrency(product.price)}</Text>
-            </ProductDetails>
+            <FlatList
+                data={products}
+                style={{ marginTop: 32 }}
+                contentContainerStyle={{ paddingHorizontal: 24 }}
+                keyExtractor={product => product._id}
+                ItemSeparatorComponent={Separator}
+                renderItem={({ item: product }) => (
+                    <ProductContainer onPress={() => handleOperModal(product)}>
+                        <Image source={{ uri: `http://192.168.0.118:3001/uploads/${product.imagePath}`, }} />
 
-            <AddToCartButton >
-              <PlusCircle />
-            </AddToCartButton>
-          </ProductContainer>
-        )}
-      />
-    </>
-  );
+                        <ProductDetails>
+                            <Text weight="600">{product.name}</Text>
+                            <Text size={14} color="#6669" style={{ marginVertical: 8 }}>{product.description}</Text>
+                            <Text size={14} weight="600">{formatCurrency(product.price)}</Text>
+                        </ProductDetails>
+
+                        <AddToCartButton onPress={() => onAddToCart(product)} >
+                            <PlusCircle />
+                        </AddToCartButton>
+                    </ProductContainer>
+                )}
+            />
+        </>
+    );
 }

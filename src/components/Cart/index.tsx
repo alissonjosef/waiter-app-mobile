@@ -14,7 +14,8 @@ interface CartProps {
 export function Cart({ cartItem }: CartProps) {
   return (
     <>
-      <FlatList
+      {cartItem.length > 0 && (
+        <FlatList
         style={{ marginBottom: 20, maxHeight: 150 }}
         data={cartItem}
         keyExtractor={cartItem => cartItem.product._id}
@@ -48,14 +49,24 @@ export function Cart({ cartItem }: CartProps) {
           </Item>
         )}
       />
+      )}
+
       <Summary>
 
         <TotalContainer>
-          <Text color="#666">Preço</Text>
-          <Text size={20} weight="600">{formatCurrency(120)}</Text>
+          {cartItem.length > 0 ? (
+            <>
+              <Text color="#666">Preço</Text>
+              <Text size={20} weight="600">{formatCurrency(120)}</Text>
+            </>
+          ) :
+
+            <>
+              <Text color="#999">Seu carrinho esta vazio</Text>
+            </>}
         </TotalContainer>
 
-        <Button onPress={() => alert('Confirmar pedido')} label='Confirmar pedido' />
+        <Button onPress={() => alert('Confirmar pedido')} label='Confirmar pedido' disabled={cartItem.length === 0} />
 
       </Summary>
     </>

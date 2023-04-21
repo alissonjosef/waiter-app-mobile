@@ -35,6 +35,7 @@ justify-content: space-between;
 align-items: center;
 `;
 export const TotalContainer = styled.View`
-
+margin-right: 32px;
+flex: 1;
 `;
 

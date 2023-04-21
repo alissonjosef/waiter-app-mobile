@@ -7,23 +7,14 @@ import { TableModal } from "../components/TableModal";
 import { Container, CategoriesContainer, MenuContainer, Footer, FooterContainer } from "./styles";
 import { Cart } from "../components/Cart";
 import { CartItem } from "../types/CartItem";
-import { products } from "../mocks/products";
+import { Product } from "../types/Product";
 
 export function Main() {
 
     const [isTableModalVisible, setIsTableModalVisible] = useState(false)
     const [selectedTable, setSelectedTable] = useState('')
     const [cartItem, setCartItem] = useState<CartItem[]>([
-        {
-            quantity: 1,
-            product: products[0],
 
-        },
-        {
-            quantity: 2,
-            product: products[1],
-
-        }
     ])
 
     function handleSabeTalbe(table: string) {
@@ -32,6 +23,13 @@ export function Main() {
 
     function handleCancelOrder(){
         setSelectedTable('')
+    }
+
+    function handleAddToCart(product: Product) {
+        if(!selectedTable){
+            setIsTableModalVisible(true)
+        }
+        alert(product.name)
     }
 
     return (
@@ -47,7 +45,7 @@ export function Main() {
                 </CategoriesContainer>
 
                 <MenuContainer>
-                    <Menu />
+                    <Menu onAddToCart={handleAddToCart} />
                 </MenuContainer>
 
             </Container>
