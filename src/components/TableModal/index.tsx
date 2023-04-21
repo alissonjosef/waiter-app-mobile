@@ -15,9 +15,9 @@ export function TableModal({ visable, onClose, onSave }: TableModalPros) {
     const [table, setTable] = useState('')
 
     function salvatPedidos() {
+        setTable('')
         onClose()
         onSave(table)
-
     }
 
     return (
