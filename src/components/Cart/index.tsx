@@ -9,27 +9,38 @@ import { Button } from "../Button";
 import { Product } from "../../types/Product";
 import { OrderConfirmedModal } from "../OrderConfirmedModal";
 import { useState } from "react";
+import { api } from "../../utils/api";
 
 interface CartProps {
     cartItem: CartItem[];
     onAdd: (product: Product) => void;
     onDecremetCart: (product: Product) => void;
     onConfirmOrder: () => void;
+    selectedTable: string;
 }
 
-export function Cart({ cartItem, onAdd, onDecremetCart, onConfirmOrder }: CartProps) {
+export function Cart({ cartItem, onAdd, onDecremetCart, onConfirmOrder, selectedTable }: CartProps) {
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isLoanding, setIsLoanding] = useState(false)
     const total = cartItem.reduce((acc, cartItem) => {
         return acc + cartItem.quantity * cartItem.product.price
     }, 0)
 
-    function handlConfirmOrder() {
-        setIsModalVisible(true)
+    async function handlConfirmOrder() {
         setIsLoanding(true)
+        const payload = {
+            table: selectedTable,
+            products: cartItem.map((cartItem) => ({
+                product: cartItem.product._id,
+                quantity: cartItem.quantity
+            }))
+        }
+        await api.post('/orders', payload)
+        setIsLoanding(false)
+        setIsModalVisible(true)
     }
 
-    function handlOk(){
+    function handlOk() {
         onConfirmOrder()
         setIsModalVisible(false)
     }

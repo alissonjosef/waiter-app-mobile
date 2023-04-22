@@ -11,11 +11,11 @@ import { Product } from "../../types/Product";
 
 interface MenuPros {
     onAddToCart: (product: Product) => void;
-    products:  Product[];
+    products: Product[];
 }
 
 
-export function Menu({onAddToCart, products}: MenuPros) {
+export function Menu({ onAddToCart, products }: MenuPros) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
@@ -27,8 +27,9 @@ export function Menu({onAddToCart, products}: MenuPros) {
     return (
         <>
 
-            <ProductModal visible={isModalVisible}
-                onClose={() => setIsModalVisible}
+            <ProductModal
+                visible={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
                 product={selectedProduct}
                 onAddToCart={onAddToCart}
             />
