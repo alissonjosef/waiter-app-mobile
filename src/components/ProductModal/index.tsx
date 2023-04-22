@@ -6,6 +6,7 @@ import { Image, CloseButton, Header, ModalBody, IngredientsContainer, Ingredient
 import { Close } from "../Icons/Close";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { Button } from "../Button";
+import { useState } from "react";
 
 interface ProductModalProps {
   visible: boolean;
@@ -15,6 +16,8 @@ interface ProductModalProps {
 }
 
 export function ProductModal({ visible, onClose, product, onAddToCart }: ProductModalProps) {
+    const [isModal, setIsModal] = useState(false)
+
   if (!product) {
     return null;
   }

@@ -29,3 +29,13 @@ padding: 16px 24px;
 
 export const FooterContainer = styled.SafeAreaView`
 `;
+export const EmptyContainer = styled.View`
+flex: 1;
+justify-content: center;
+align-items: center;
+`;
+export const CenturedContainer = styled.View`
+justify-content: center;
+align-items: center;
+flex: 1;
+`;

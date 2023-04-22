@@ -4,25 +4,34 @@ import { Categories } from "../components/Categories/inidex";
 import { Header } from "../components/Header";
 import { Menu } from "../components/Menu/inidex";
 import { TableModal } from "../components/TableModal";
-import { Container, CategoriesContainer, MenuContainer, Footer, FooterContainer } from "./styles";
+import { Container, CategoriesContainer, MenuContainer, Footer, FooterContainer, CenturedContainer,EmptyContainer } from "./styles";
 import { Cart } from "../components/Cart";
 import { CartItem } from "../types/CartItem";
 import { Product } from "../types/Product";
+import { ActivityIndicator } from "react-native";
+
+import { products as mockProducts } from "../mocks/products";
+import { Empty } from "../components/Icons/Empty";
+import { Text } from "../components/Text";
 
 export function Main() {
 
     const [isTableModalVisible, setIsTableModalVisible] = useState(false)
     const [selectedTable, setSelectedTable] = useState('')
+    const [isLoanding, setIsLoanding] = useState(false)
+    const [products, setProducts] = useState<Product[]>(mockProducts)
     const [cartItem, setCartItem] = useState<CartItem[]>([
 
     ])
 
     function handleSabeTalbe(table: string) {
         setSelectedTable(table)
+        setIsTableModalVisible(false)
     }
 
     function handleCancelOrder() {
         setSelectedTable('')
+        setCartItem([])
     }
 
     function handleAddToCart(product: Product) {
@@ -72,6 +81,11 @@ export function Main() {
         })
     }
 
+    function handlConfirmOrder() {
+        setSelectedTable('')
+        setCartItem([])
+    }
+
     return (
         <>
             <Container>
@@ -80,24 +94,47 @@ export function Main() {
                     onCancelOrder={handleCancelOrder}
                 />
 
-                <CategoriesContainer>
-                    <Categories></Categories>
-                </CategoriesContainer>
+                {isLoanding && (
+                    <CenturedContainer>
+                        <ActivityIndicator color="#D73035" size='large' />
+                    </CenturedContainer>
+                )}
 
-                <MenuContainer>
-                    <Menu onAddToCart={handleAddToCart} />
-                </MenuContainer>
+                {!isLoanding && (
+                    <>
+                        <CategoriesContainer>
+                            <Categories></Categories>
+                        </CategoriesContainer>
+
+                        {products.length > 0 ? (
+                            <MenuContainer>
+                                <Menu products={products} onAddToCart={handleAddToCart} />
+                            </MenuContainer>
+                        ) : <EmptyContainer>
+                            <>
+                                <Empty />
+                                <Text style={{marginTop: 24}} color="#666">Nenhum produto foi  encontrado!</Text>
+                            </>
+                        </EmptyContainer>}
+                    </>
+                )}
+
 
             </Container>
             <Footer>
                 {!selectedTable && (
 
                     <FooterContainer>
-                        <Button onPress={() => setIsTableModalVisible(true)} label="Novo Pedido" />
+                        <Button disabled={isLoanding} onPress={() => setIsTableModalVisible(true)} label="Novo Pedido" />
                     </FooterContainer>
                 )}
                 {selectedTable && (
-                    <Cart onAdd={handleAddToCart} onDecremetCart={handlDecremetCarItem} cartItem={cartItem} />
+                    <Cart
+                        onAdd={handleAddToCart}
+                        onDecremetCart={handlDecremetCarItem}
+                        cartItem={cartItem}
+                        onConfirmOrder={handlConfirmOrder}
+                    />
                 )}
             </Footer>
 
