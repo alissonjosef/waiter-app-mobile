@@ -21,23 +21,63 @@ export function Main() {
         setSelectedTable(table)
     }
 
-    function handleCancelOrder(){
+    function handleCancelOrder() {
         setSelectedTable('')
     }
 
     function handleAddToCart(product: Product) {
-        if(!selectedTable){
+        if (!selectedTable) {
             setIsTableModalVisible(true)
         }
-        alert(product.name)
+
+        setCartItem((prevState) => {
+            const itemIdex = prevState.findIndex(cartItem => cartItem.product._id === product._id);
+            if (itemIdex < 0) {
+                return prevState.concat({
+                    quantity: 1,
+                    product,
+                })
+            }
+
+            const newCartItems = [...prevState];
+            const item = newCartItems[itemIdex]
+
+            newCartItems[itemIdex] = {
+                ...item,
+                quantity: item.quantity + 1
+            }
+
+            return newCartItems;
+        })
+    }
+
+    function handlDecremetCarItem(product: Product) {
+        setCartItem((prevState) => {
+            const itemIdex = prevState.findIndex(cartItem => cartItem.product._id === product._id);
+            const item = prevState[itemIdex];
+
+            const newCartItems = [...prevState];
+            if (item.quantity === 1) {
+                newCartItems.splice(itemIdex, 1);
+
+                return newCartItems;
+            }
+
+            newCartItems[itemIdex] = {
+                ...item,
+                quantity: item.quantity - 1
+            }
+
+            return newCartItems;
+        })
     }
 
     return (
         <>
             <Container>
                 <Header
-                selectedTable={selectedTable}
-                onCancelOrder={handleCancelOrder}
+                    selectedTable={selectedTable}
+                    onCancelOrder={handleCancelOrder}
                 />
 
                 <CategoriesContainer>
@@ -56,9 +96,9 @@ export function Main() {
                         <Button onPress={() => setIsTableModalVisible(true)} label="Novo Pedido" />
                     </FooterContainer>
                 )}
-            {selectedTable && (
-                <Cart cartItem={cartItem}/>
-            )}
+                {selectedTable && (
+                    <Cart onAdd={handleAddToCart} onDecremetCart={handlDecremetCarItem} cartItem={cartItem} />
+                )}
             </Footer>
 
 
